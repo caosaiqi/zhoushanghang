@@ -1,30 +1,42 @@
 <template>
   <div style="position: relative;width:98%;paddingBottom:50px;">
-    <el-form ref="form" :inline="true" :model="params" class="demo-form-inline" style="marginTop:30px">
-      <el-form-item prop="demandName" label="技术名称">
-        <el-input v-model="params.demandName" placeholder="请输入成果名称" clearable  size="small"></el-input>
+    <el-form :inline="true" :model="formInline" class="demo-form-inline" style="marginTop:30px">
+      <el-form-item label="技术名称">
+        <el-input v-model="formInline.keyWord" placeholder="请输入成果名称" clearable  size="small"></el-input>
       </el-form-item>
-      <el-form-item prop="demandType" label="技术来源">
-        <el-select v-model="params.demandType " clearable  size="small">
-          <el-option v-for="(item, index) in demandList" :key="index" :label="item.name" :value="item.id"></el-option>
+      <el-form-item label="技术来源">
+        <el-select v-model="formInline.isFake " clearable  size="small">
+          <el-option label="军事科研成果" value="1"></el-option>
+          <el-option label="军工科研院所成果" value="0"></el-option>
+          <el-option label="中科院与高校科研成果" value="1"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="domainId" label="所属领域">
-        <el-select v-model="params.domainId " clearable  size="small">
-            <el-option v-for="(item, index) in domainList" :key="index" :label="item.name" :value="item.id"></el-option>
+      <el-form-item label="所属领域">
+        <el-select v-model="formInline.isFake " clearable  size="small">
+          <el-option label="军事物联网" value="1"></el-option>
+          <el-option label="先进无人系统" value="0"></el-option>
+          <el-option label="中科院与高校科研成果" value="1"></el-option>
         </el-select>
       </el-form-item>
+      <!-- <el-form-item label="交易付款时间" v-if="lotsType!==1">
+        <el-date-picker
+          v-model="formInline.payTime"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item> -->
       <el-form-item>
-        <el-button type="primary" size="small" @click="onSubmit">查询</el-button>
-        <el-button size="small" @click="onClear">全部</el-button>
+        <el-button type="primary" size="small" @click="onSubmit"   >查询</el-button>
       </el-form-item>
     </el-form>
       <el-table
         :data="tableData"
         :header-cell-style="{background:'#F3F4F7',color:'rgba(16, 16, 16, 1)',textAlign:'center'}"
       >
-        <el-table-column prop="projectName" label="产业创新项目" align="center"></el-table-column>
-        <el-table-column prop="demandName" label="技术来源"  align="center">
+        <el-table-column prop="shopName" label="产业创新项目" align="center"></el-table-column>
+        <el-table-column prop="amount" label="技术来源"  align="center">
         </el-table-column>
         <!-- <el-table-column prop="orderCount" label="应用领域与优势简介"  align="center" show-overflow-tooltip></el-table-column>
           <el-table-column prop="get" label="创新特点与优势简介"  align="center" show-overflow-tooltip>
@@ -36,31 +48,16 @@
              
             </template>
         </el-table-column> -->
-        <el-table-column prop="domainName" label="所属领域"  align="center">
+        <el-table-column prop="payCount" label="所属领域"  align="center">
          
         </el-table-column>
         <!-- <el-table-column prop="code" label="技术成熟度自评"  align="center">
          
         </el-table-column> -->
-        <el-table-column prop="publishUname" label="发布方"  align="center">
+        <el-table-column prop="successPayAmount" label="发布方"  align="center">
         </el-table-column>
-         <el-table-column prop="content" label="研究报告"  align="center">
-          <template slot-scope="scope">
-            <el-tooltip placement="top" effect="light">
-               <div style="max-width: 500px" slot="content">
-                 {{scope.row.content}}
-               </div>
-               <div class="row-content">
-                {{scope.row.content}}
-              </div>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-
-        <el-table-column :width="100" prop="successPayCount" label="操作"  align="center">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleDowload(scope)">下载</el-button>
-          </template>
+        <el-table-column prop="successPayCount" label="操作"  align="center">
+            
         </el-table-column>
         <!-- <el-table-column prop="fans" label="粉丝数"  align="center"></el-table-column> -->
         <!--  -->
@@ -70,11 +67,11 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :page-sizes="[10, 20, 30, 50]"
-          :page-size="params.page"
+          :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+          :total="400"
         ></el-pagination>
-    </div>
+      </div>
     </div>
   
 </template>
@@ -83,75 +80,152 @@
   export default {
     data() {
       return {
-        total: 0,
-        params: {
-          demandName: undefined,
-          demandType: undefined,
-          domainId: undefined,
-          limit: 10,
-          page: 1,
+        getListData:[],
+        onSubmit:'',
+        formInline:{
         },
-
-        demandList:[],
-        domainList: [],
-
-        tableData: [],
+        tableData: [{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },
+       {
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },{
+          shopName: '精密加工技术',
+          amount: '自研',
+          orderCount: '主要提供各种装备的结构设计与生产加工，包括模具、铸造、机加工和表面处理一站式解决方案',
+            payAmount:'数千万',
+            payCount:'商业航天',
+            code:'9级',
+            get:'质量控制能力强，在现有军工服务体系中，属于中上等供应商；可以一站式解决结构所有工艺流程，而不是能完成单个工序，这个对客户非常有吸引力；成本控制能力强，现有我们的成本基本上市客户现有供应商的70%即可完成高质量的加工交期，全工序完成，交期比一般供应商快20%以上',
+            successPayAmount:'军事科研机构',
+            successPayCount:'附研究报告',
+        },
+        ]
       }
-    },
-    created () {
-      this.getList()
-      this.getPublishTyps()
-      this.getTabDomains()
     },
     methods: {
       async getList () {
-        const ret = await this.$api.element.getList(this.params)
-        if (ret && ret.data && ret.data.industryRecommendList) {
-          this.total = ret.data.totalNumber
-          this.tableData = ret.data.industryRecommendList
-        }
+        const { data } = await this.feachgetListData()
+        const gengetList = gendata(getList,'')
+        this.getListData = gengetList
       },
-      async getPublishTyps () {
-        try {
-          const ret = await this.$api.Publish.type()
-          if (ret.data && ret.data.length > 0) {
-            this.demandList = ret.data
-          }
-        } catch(err) {
-          throw err
-        }
+      handleEdit(index, row) {
+        console.log(index, row);
       },
-      
-      async getTabDomains () {
-        try {
-          const ret = await this.$api.Publish.tabDomain()
-          if (ret.data && ret.data && ret.data.length > 0) {
-            this.domainList = ret.data
-          }
-        } catch (err) {
-          throw err
-        }
+      handleDelete(index, row) {
+        console.log(index, row);
       },
-      handleSizeChange (val) {
-        this.limit = val
-        this.getList()
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
       },
-      handleCurrentChange (val) {
-        this.page = val
-        this.getList()
-      },
-      onSubmit () {
-        this.page = 1
-        this.getList()
-      },
-      onClear () {
-        console.log(this.$refs.form)
-        this.$refs.form.resetFields()
-        this.page = 1
-        this.getList()
-      },
-      handleDowload ({ row }) {
-        window.open(row.materialUrl)
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
       }
     }
   }
@@ -165,8 +239,5 @@
 img{
   width: auto;
   height: 80px;
-}
-.row-content{
-  overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
 }
 </style>

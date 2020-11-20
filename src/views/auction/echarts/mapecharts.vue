@@ -4,15 +4,13 @@
 <script>
 import "echarts/map/js/china.js";
 import city from "echarts/map/json/china-cities.json";
-import province from "echarts/map/json/china.json";
-
 export default {
   name: "ECharts",
   components: {},
   data() {
     return {
       mapData: [
-        { name: "成都", number: 102, count: 1, good: 123213, bad: 144 },
+        { name: "成都", number: 102, count: 2457, good: 2313, bad: 144 },
         { name: "绵阳", number: 169, count: 1931, good: 1869, bad: 62 },
         { name: "西安", number: 164, count: 1291, good: 1200, bad: 91 },
         { name: "长沙", number: 157, count: 2142, good: 2098, bad: 44 },
@@ -34,109 +32,47 @@ export default {
         { name: "舟山", number: 120, good: 2432, bad: 102 },
         { name: "太原", number: 125, good: 1540, bad: 41 },
       ],
-      cityList: [],
-      geoCoordMap: {}
     };
   },
-  async created() {
-    this.initGeoCoordMap()
-     await this.getCityData()
+  mounted() {
     this.chinaConfigure();
   },
   methods: {
-    initGeoCoordMap() {
-       city.features.forEach( (v) => {
-        var name = v.properties.name; // 地区经纬度
-        this.geoCoordMap[name] = v.properties.cp;
-      });
-      
-      province.features.forEach(v => {
-         var name = v.properties.name; // 地区经纬度
-         this.geoCoordMap[name] = v.properties.cp
-      })
-    },
-    async getCityData () {
-      try {
-        const ret = await this.$api.tabNewIndustry.getCityAll()
-        if (ret && ret.data) {
-           this.cityList = []
-           ret.data.forEach(item => {
-            Object.keys(item).map(city => {
-              const name = city.replace('省', '').replace('市', '')
-              const geoCoord = this.geoCoordMap[name];
-              this.cityList.push(
-                {
-                  name: city,
-                  items: item[city],
-                  value: geoCoord
-                }
-              )
-             })
-          })
-        }
-      } catch(err) {
-        throw err
-      }
-    },
-    tooltipStr ({name, items}) {
-      return  `
-          <div
-            style="
-              width: 280px;
-              height: 200px;
-              background: rgba(22, 80, 158, 0.8);
-              border: 1px solid rgba(7, 166, 255, 0.7);
-            "
-          >
-            <div
-              style="
-                width: 100%;
-                height: 40px;
-                line-height: 40px;
-                border-bottom: 2px solid rgba(7, 166, 255, 0.7);
-                padding: 0 20px;
-              "
-            >
-            <i
-              style="
-                display: inline-block;
-                width: 8px;
-                height: 8px;
-                background: #16d6ff;
-                border-radius: 40px;
-              "
-            ></i
-            > ${name}<span style="margin-left: 10px; color: #fff; font-size: 16px"></span>
-          </div>
-          <div style="padding: 20px">
-            ${ 
-               items.map(name => {
-                 return `
-                    <p style="color: #fff; font-size: 12px">
-                      <i
-                        style="
-                          display: inline-block;
-                          width: 10px;
-                          height: 10px;
-                          background: #16d6ff;
-                          border-radius: 40px;
-                          margin: 0 8px;
-                        "
-                      ></i
-                      >${name}<span style="color: #f48225; margin: 0 6px"></span>
-                    </p>
-                 `
-               }).join('|').replace('|', '')
-            }
-          </div>
-        </div>
-      `
-    },
     chinaConfigure() {
       var _this = this;
       let myChart = this.$echarts.init(this.$refs.platform); //这里是为了获得容器所在位置
-      var max = 480, min = 9; // todo
-      var maxSize4Pin = 100, minSize4Pin = 20;
+
+      var geoCoordMap = {};
+      var mapName = "china";
+      myChart.showLoading();
+      var mapFeatures = city.features;
+      myChart.hideLoading();
+      mapFeatures.forEach(function (v) {
+        // 地区名称
+        var name = v.properties.name; // 地区经纬度
+        geoCoordMap[name] = v.properties.cp;
+      });
+      var data = [];
+      data = this.mapData;
+      //  console.log(data,geoCoordMap)
+      var max = 480,
+        min = 9; // todo
+      var maxSize4Pin = 100,
+        minSize4Pin = 20;
+      var convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+          var geoCoord = geoCoordMap[data[i].name];
+          if (geoCoord) {
+            res.push({
+              name: data[i].name,
+              count: data[i].count,
+              value: geoCoord.concat(data[i].value),
+            });
+          }
+        }
+        return res;
+      };
       window.onresize = myChart.resize;
       myChart.setOption({
         // 进行相关配置
@@ -153,14 +89,51 @@ export default {
           enterable: false,
           transitionDuration: 0,
           extraCssText: "z-index:100",
-          formatter: (params, ticket, callback) => {
+          formatter: function (params, ticket, callback) {
             // if (ticket.indexOf('散点') != -1) {
-            const { data = {} } = params
-            const { items, name } = data
-            if (items && items.length) {
-              return this.tooltipStr(data)
-            } 
-            return null;
+            let index = params.dataIndex;
+
+            console.log(_this.mapData);
+            let name = params.name;
+            var tipHtml = "";
+            if (_this.mapData[index].count) {
+              tipHtml =
+                '<div style="width:280px;height:200px;background:rgba(22,80,158,0.8);border:1px solid rgba(7,166,255,0.7)">' +
+                '<div style="width:100%;height:40px;line-height:40px;border-bottom:2px solid rgba(7,166,255,0.7);padding:0 20px">' +
+                '<i style="display:inline-block;width:8px;height:8px;background:#16d6ff;border-radius:40px;">' +
+                "</i>" +
+                '<span style="margin-left:10px;color:#fff;font-size:16px;">' +
+                name +
+                "</span>" +
+                "</div>" +
+                '<div style="padding:20px">' +
+                '<p style="color:#fff;font-size:12px;">' +
+                '<i style="display:inline-block;width:10px;height:10px;background:#16d6ff;border-radius:40px;margin:0 8px">' +
+                "</i>" +
+                "军民融合主战区" +
+                '<span style="color:#f48225;margin:0 6px;">';
+              "</span>" + "</div>" + "</div>";
+            } else {
+              tipHtml =
+                '<div style="width:280px;height:200px;background:rgba(22,80,158,0.8);border:1px solid rgba(7,166,255,0.7)">' +
+                '<div style="width:100%;height:40px;line-height:40px;border-bottom:2px solid rgba(7,166,255,0.7);padding:0 20px">' +
+                '<i style="display:inline-block;width:8px;height:8px;background:#16d6ff;border-radius:40px;">' +
+                "</i>" +
+                '<span style="margin-left:10px;color:#fff;font-size:16px;">' +
+                name +
+                "</span>" +
+                "</div>" +
+                '<div style="padding:20px">' +
+                '<p style="color:#fff;font-size:12px;">' +
+                '<i style="display:inline-block;width:10px;height:10px;background:#16d6ff;border-radius:40px;margin:0 8px">' +
+                "</i>" +
+                "军民融合支点城市" +
+                '<span style="color:#f48225;margin:0 6px;">';
+              "</span>" + "</div>" + "</div>";
+            }
+
+            return tipHtml;
+            // }
           },
         },
         visualMap: {
@@ -176,7 +149,7 @@ export default {
           },
         },
         geo: {
-          map: 'china',
+          map: mapName,
           label: {
             normal: {
               show: false,
@@ -212,7 +185,7 @@ export default {
             name: "散点",
             type: "effectScatter",
             coordinateSystem: "geo",
-            data:this.cityList,
+            data: convertData(this.mapData),
             rippleEffect: {
               //涟漪特效
               period: 4, //动画时间，值越小速度越快
@@ -241,7 +214,13 @@ export default {
             name: "散点",
             type: "effectScatter",
             coordinateSystem: "geo",
-            data: this.cityList,
+            data: convertData(
+              this.mapData
+                .sort(function (a, b) {
+                  return b.count - a.count;
+                })
+                .slice(0, 5)
+            ),
             symbolSize: 8,
             showEffectOn: "render",
             rippleEffect: {
