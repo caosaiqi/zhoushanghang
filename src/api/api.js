@@ -49,7 +49,7 @@ const apis = {
       return request.get('/demand/getDomainAll')
     },
   },
-  // 军转民科技成果接口
+  // 军工科技成果
   technologyAchievement: {
     //需求列表
     list(params){
@@ -74,6 +74,9 @@ const apis = {
     // 成果类型接口
     findByresultsTypeId () {
       return request.get('/tabResultsType/findByresultsTypeId')
+    },
+    addMessage (params) {
+      return request.post('/tabMessage/addMessage', params)
     }
   },
   //先进前沿技术模块接口
@@ -95,10 +98,8 @@ const apis = {
       return request.post('/tptController/tptAdd',{params})
     }
   }, 
-
   // 新兴军工产业模块
-  
-    tabNewIndustry: {
+  tabNewIndustry: {
       //新兴军工产业集群图数据查询
       getDomainAll () {
         return request.get('/tabNewIndustry/getDomainAll')
@@ -114,7 +115,10 @@ const apis = {
       // /新兴优质企业模块接口详情
       getEnterpriseList() {
         return request.get('/tabEnterPrise/getEnterpriseList')
-      }
+      },
+      getTabPublisher() {
+        return request.get('/tabPublisher/getTabPublisher')
+      },
   },
   // 创新资源要素
   element: {
@@ -127,9 +131,12 @@ const apis = {
       return request.get('/element/findByElement')
     },
     //产业创新项目推荐模块接口详情
-    getList(params) {
-      return request.get('/tabIndustryRecommend/getList', { params })
+    getList() {
+      return request.get('/tabIndustryRecommend/getList')
     },
+    saveTabIndustryRecommend(params) {
+      return request.post('/tabIndustryRecommend/saveTabIndustryRecommend', params)
+    }
     // 科技创新政策版块分页查询
       
   },
@@ -140,39 +147,41 @@ const apis = {
       return request.get('/descController/descFind')
     },
   },
-      // 查询先进技术评估数据
-      taTeController() {
+  // 查询先进技术评估数据
+  taTeController() {
         return request.get('/taTeController/taTeFindAll')
   },
-  
-// 分页查询成果转化服务数据/tatController/tatFindAll
-tatController () {
+  // 分页查询成果转化服务数据/tatController/tatFindAll
+  tatController () {
     return request.get('/tatController/tatFindAll')
   },
   
-// /tscController/tscFindAll
-// // 分页供应链创新服务数据
- tscController() {
-  return request.get('/tscController/tscFindAll')
- },
+  // /tscController/tscFindAll
+  // // 分页供应链创新服务数据
+  tscController() {
+    return request.get('/tscController/tscFindAll')
+  },
  
-// 分页查询项目全价值创新数据
-tpiController() {
-  return request.get('/tpiController/tpiFindAll')
-},
+  // 分页查询项目全价值创新数据
+  tpiController() {
+    return request.get('/tpiController/tpiFindAll')
+  },
 
-// 分页查询行业领域解决方案数据
-tsController() {
-  return request.get('/tsController/tsFindAll')
-},
+  // 分页查询行业领域解决方案数据
+  tsController() {
+    return request.get('/tsController/tsFindAll')
+  },
 
-// 查询园区、产业链、生态服务数据
-tdicController () {
-  return request.get('/tdicController/tdicFind')
-},
-// 分页查询跨区域协同创新服务数据
-ttciController() {
-  return request.get('/ttciController/ttciFind')
-},
- }
+  // 查询园区、产业链、生态服务数据
+  tdicController () {
+    return request.get('/tdicController/tdicFind')
+  },
+  // 分页查询跨区域协同创新服务数据
+  ttciController() {
+    return request.get('/ttciController/ttciFind')
+  },
+  uploadFile (params) {
+    return request.post('/file/upload', params)
+  }
+}
 export default apis

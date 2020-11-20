@@ -18,21 +18,42 @@ export default {
     },
     width: {
       type: String,
-      default: "100%",
+      default: "70%",
     },
     height: {
       type: String,
       default: "600px",
     },
+    data: {
+      type: Array,
+    },
   },
   data() {
     return {
-      xData: [],
-      yData: []
+      chart: null,
+      list: [],
+      arr1: [],
+      arr2: [],
     };
   },
+  watch: {
+    data: function (newVal, oldVal) {
+      this.arr2 = [];
+      this.arr1 = [];
+      this.list = [];
+      for (var i = 0; i < newVal.length; i++) {
+        this.list.push(newVal[i].statTime.split("T")[0]);
+        this.arr1.push(newVal[i].newUserAccount);
+        this.arr2.push(newVal[i].bindingPhone);
+      }
+
+      this.initChart();
+    },
+  },
   mounted() {
-    this.featchTptBygetDomainAllData()
+    this.$nextTick(() => {
+      this.initChart();
+    });
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -42,63 +63,48 @@ export default {
     this.chart = null;
   },
   methods: {
-    async featchTptBygetDomainAllData() {
-      try {
-        const ret = await this.$api.tabNewIndustry.getDomainAll()
-        if (ret && ret.data && ret.data.domainList && ret.data.domainList.length) {
-          ret.data.domainList.forEach(({domainName, number}) => {
-             this.xData.push(domainName)
-             this.yData.push(number)
-          })
-        }
-        this.initChart()
-      } catch (err) {
-        throw err
-      }
-    },
     initChart() {
       this.chart = echarts.init(this.$el, "macarons");
 
       this.chart.setOption({
-        title: {
-          text: "新兴军工产业集群图",
-        },
-        color: ["#3398DB"],
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            // 坐标轴指示器，坐标轴触发有效
-            type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
-          },
-        },
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true,
-        },
-        xAxis: [
-          {
-            type: "category",
-            data: this.xData,
+         title: {
+        text: '新兴军工产业集群图',
+    },
+    color: ['#3398DB'],
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis: [
+        {
+            type: 'category',
+            data: ['通用航空', '新一代信息系统技术', '生物安全与健康', '未来商业航天', '无人系统与机器人', '海洋高端装备与应用','赛博空间安全','军民两用新材料'],
             axisTick: {
-              alignWithLabel: true,
-            },
-          },
-        ],
-        yAxis: [
-          {
-            type: "value",
-          },
-        ],
-        series: [
-          {
-            name: "产值",
-            type: "bar",
-            barWidth: "60%",
-            data: this.yData,
-          },
-        ],
+                alignWithLabel: true
+            }
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value'
+        }
+    ],
+    series: [
+        {
+            name: '产值',
+            type: 'bar',
+            barWidth: '60%',
+            data: [10, 52, 200, 334, 390, 330, 220,230]
+        }
+    ]
       });
     },
   },

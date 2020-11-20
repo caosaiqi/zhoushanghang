@@ -1,25 +1,23 @@
 <template>
   <div style="position: relative;width:98%;paddingBottom:50px;">
-    <el-form :inline="true" :model="formInline" class="demo-form-inline" style="marginTop:30px">
+    <el-form :inline="true" :model="searchParams" class="demo-form-inline" style="marginTop:30px">
       <el-form-item label="技术名称">
-        <el-input v-model="formInline.keyWord" placeholder="请输入成果名称" clearable  size="small"></el-input>
+        <el-input v-model="searchParams.technologyName" placeholder="请输入成果名称" clearable  size="small"></el-input>
       </el-form-item>
       <el-form-item label="技术来源">
-        <el-select v-model="formInline.isFake " clearable  size="small">
+        <el-select v-model="searchParams.technologyType " clearable  size="small">
           <el-option label="军事科研成果" value="1"></el-option>
           <el-option label="军工科研院所成果" value="0"></el-option>
           <el-option label="中科院与高校科研成果" value="1"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="所属领域">
-        <el-select v-model="formInline.isFake " clearable  size="small">
-          <el-option label="军事物联网" value="1"></el-option>
-          <el-option label="先进无人系统" value="0"></el-option>
-          <el-option label="中科院与高校科研成果" value="1"></el-option>
+        <el-select v-model="searchParams.domainId " clearable  size="small">
+          <el-option v-for="item in domainOptions" :label="item.domainName" :value="item.domainName" :key="item.domainName" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit"   size="small">查询</el-button>
+        <el-button type="primary" @click="search"  size="small">查询</el-button>
       </el-form-item>
     </el-form>
       <el-table
@@ -33,7 +31,7 @@
           <el-table-column prop="trait" label="创新特点与优势简介"  align="center" show-overflow-tooltip>
         </el-table-column>
         <el-table-column prop="orderCount" label="成果展示（图片或视频）"  align="center">
-          <template slot-scope="scope">
+          <template>
             <img src="@/assets/404_images/img/212.png" alt=""/>
           </template>
         </el-table-column>
@@ -51,7 +49,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :page-sizes="[10, 20, 30, 50]"
-          :page-size="10"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pageTotal"
         ></el-pagination>
@@ -64,36 +62,49 @@
     name: 'AdvacList',
     data() {
       return {
-        formInline:{},
         tableData: [],
         pageTotal: 0,
+        pageSize: 10,
+        pageNum: 1,
+        domainOptions: [],
+        typeOptions: [],
+        searchParams: {},
       }
     },
     created () {
-      this.fetcListData()
+      this.fetchData()
     },
     methods: {
-      fetcListData () {
-        this.$api.tptController.list().then(({ data }) => {
-        this.tableData = data.list
-        this.pageTotal = data.total
-          
-        })
+      async fetchData () {
+        const { data: typeData } = await this.fetchTypeData()
+        this.typeOptions = typeData
+        const { data: listData } = await this.list()
+        this.tableData = listData.list
+        this.pageTotal = listData.total
+        const { data: { domainList: domainData } } = await this.fetchDomainData()
+        this.domainOptions = domainData
       },
-      handleEdit(index, row) {
-        console.log(index, row);
+      fetchTypeData () {
+        return this.$api.Publish.type()
       },
-      handleDelete(index, row) {
-        console.log(index, row);
+      fetchDomainData () {
+        return this.$api.Publish.getDomainAll()
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+      async search () {
+        const { data: listData } = await this.list(this.searchParams)
+        this.tableData = listData.list
+        this.pageTotal = listData.total
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+      list(params){
+        return this.$api.tptController.list(params)
       },
-      onSubmit () {
-
+      handleSizeChange (val) {
+        this.pageSize = val
+        this.list({ pageSize: this.pageSize, ...searchParams })
+      },
+      handleCurrentChange (val) {
+        this.pageNum = val
+        this.list({ pageNum: this.pageNum, ...searchParams })
       },
     }
   }
