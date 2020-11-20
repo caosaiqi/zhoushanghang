@@ -23,7 +23,7 @@
        <imglist/>
     </div>
      <div v-if="index==1">
-       <maplist :data="getListData"/>
+       <maplist />
      </div>
      <div v-if="index==2">
        <study/>
@@ -54,7 +54,6 @@ export default {
        activeName: 'first',
       activeNames: ["1"],
       getEnterpriseListData:[],
-      getListData:[],
     }
   },
   created() {

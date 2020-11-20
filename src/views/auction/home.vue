@@ -38,82 +38,33 @@
         <li @mouseover="handler(5)" class="hove">创新资源要素</li>
         <li @mouseover="handler(6)" class="hove">数字赋能服务</li>
       </ul>
+
       <div v-if="index==1">
-        <a href="#">
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-        </a>
-      </div>
-      <div v-if="index==2">  
-        <a href="#">
-         <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
+         <div class="list-links">
+           <a v-for="(item, index) in publishList" :key="index" class="list-link-item">
+            <b>{{item.demandName}}</b>
+            <span>{{item.createTime}}</span>
           </a>
+         </div>
       </div>
-      <div v-if="index==3">
-        <a href="#" >
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-       </a>
+
+      <div v-if="index==2">
+         <div class="list-links">
+           <a v-for="(item, index) in achievementList" :key="index" class="list-link-item">
+            <b>{{item.achievementName}}</b>
+            <span>{{item.createTime}}</span>
+          </a>
+         </div>
       </div>
-      <div v-if="index==4">
-        <a href="#">
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-        </a>
+
+       <div v-if="index==3">
+         <div class="list-links">
+           <a v-for="(item, index) in tptList" :key="index" class="list-link-item">
+            <b>{{item.technologyName}}</b>
+          </a>
+         </div>
       </div>
-      <div v-if="index==5">
-        <a href="#">
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-        </a>
-      </div>
-      <div v-if="index==6">
-        <a href="#">
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
-          <span>DKGJ矢量接收阵设备（含对DKGJ软件）项目废标公告</span>
- 
-        </a>
-      </div>
+
     </div>
       <div class="block">
     <el-carousel height="150px" width="100%">
@@ -168,17 +119,39 @@ export default {
   data() {
     return {
       index: 1,
-      url:'@/assets/404_images/img/pipeline1.jpg'
+      url:'@/assets/404_images/img/pipeline1.jpg',
       
+      publishList: [],
+      achievementList: [],
+      tptList: [],
     };
   },
   created() {
-    // this.name = localStorage.getItem("name");
+    this.getList()
   },
-
   methods: {
+    getData (ret) {
+      if (ret && ret.data && ret.data.list) {
+        return ret.data.list || []
+      }
+      return []
+    },
     handler(key){
       this.index=key
+    },
+    async getList() {
+      const commonParmas = { total: 8 }
+      const publistRet = await this.$api.Publish.publist(commonParmas)
+      if (publistRet && publistRet.data && publistRet.data.demandList) {
+        this.publishList = publistRet.data.demandList
+      }
+   
+      const achievementRet =  await this.$api.technologyAchievement.list(commonParmas)
+      this.achievementList = this.getData(achievementRet)
+
+      const tptRet = await this.$api.tptController.list(commonParmas)
+      this.tptList = this.getData(tptRet)
+      
     }
   },
 };
@@ -306,17 +279,9 @@ export default {
     color: #FFFFFF;
      cursor:pointer
 }
-.list div{
+.list>div{
   width: 100%;
   height: 500px;
-  display: flex;
-  align-items: center;
-  transition: all 3s;
-  }
-.list div a span{
-  display: block;
-  margin-left: 20px;
-  margin-top: 30px;
 }
 .list div a :hover {
  color: #b60002;
@@ -370,4 +335,33 @@ export default {
 .block ul li img{
   height: 100%;
 }
+
+.list-links {
+  width: 100%;
+  margin-left: 30px;
+  .list-link-item{
+   display: flex;
+   margin-bottom: 10px;
+   b {
+      flex:1;
+      max-width: 380px;
+      font-size: 16px;
+      font-family: Microsoft YaHei;
+      font-weight: 400;
+      color: #333;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    span {
+      float: right;
+      color: #999999;
+      font-size: 14px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+    }
+  }
+}
+
+
 </style>

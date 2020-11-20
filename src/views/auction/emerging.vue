@@ -25,8 +25,8 @@
     <!-- <el-tab-pane label="定时任务补偿" name="fourth"></el-tab-pane> -->
   </el-tabs>
     <div v-if="index==0">
-      <Maplist :data="getDomainAllData"/>
-     <Mapechatrs :data="getCityAllData"/>
+     <Maplist :data="getDomainAllData"/>
+     <Mapechatrs/>
     </div>
      <div v-if="index==1" :data="getIndustryImgListData">
        <div>
@@ -74,21 +74,15 @@ export default {
   },
   methods: {
     async getDomain () {
-      const { data: getDomainAll } = await this.featchTptBygetDomainAllData()
-      const genData = this.genData(getDomainAll,)
-      this.DomainAllData = genData
+      // const { data: getCityAll } = await this.featchTptBygetCityAllData()
+      // const gengetCityAllData = this.genData(getCityAll,'')
+      // this.getCityAllData = gengetCityAllData
 
-      const { data: getCityAll } = await this.featchTptBygetCityAllData()
-      const gengetCityAllData = this.genData(getCityAll,'')
-      this.getCityAllData = gengetCityAllData
-
-      const { data:getIndustryImgListData } = await this.featchTptBygetIndustryImgListData()
-      const gengetIndustryImgListData = this. gengetIndustryImgListData()
-      this.getIndustryImgListData = gengetIndustryImgListData
+      // const { data:getIndustryImgListData } = await this.featchTptBygetIndustryImgListData()
+      // const gengetIndustryImgListData = this. gengetIndustryImgListData()
+      // this.getIndustryImgListData = gengetIndustryImgListData
     },
-    featchTptBygetDomainAllData() {
-      return this.$api.tabNewIndustry.getDomainAll()
-    },
+    
     featchTptBygetCityAllData () {
       return this.$api.tabNewIndustry.getCityAll()
     },

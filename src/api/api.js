@@ -127,8 +127,8 @@ const apis = {
       return request.get('/element/findByElement')
     },
     //产业创新项目推荐模块接口详情
-    getList() {
-      return request.get('/tabIndustryRecommend/getList')
+    getList(params) {
+      return request.get('/tabIndustryRecommend/getList', { params })
     },
     // 科技创新政策版块分页查询
       
