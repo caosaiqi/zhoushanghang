@@ -24,35 +24,15 @@ export default {
       type: String,
       default: "800px",
     },
-    data: {
-      type: Array,
-    },
   },
   data() {
     return {
-      chart: null,
-      list: [],
-      arr1: [],
-      arr2: [],
+      data: {}
     };
-  },
-  watch: {
-    data: function (newVal, oldVal) {
-      this.arr2 = [];
-      this.arr1 = [];
-      this.list = [];
-      for (var i = 0; i < newVal.length; i++) {
-        this.list.push(newVal[i].statTime.split("T")[0]);
-        this.arr1.push(newVal[i].newUserAccount);
-        this.arr2.push(newVal[i].bindingPhone);
-      }
-
-      this.initChart();
-    },
   },
   mounted() {
     this.$nextTick(() => {
-      this.initChart();
+   
     });
   },
   beforeDestroy() {
@@ -63,6 +43,14 @@ export default {
     this.chart = null;
   },
   methods: {
+    async getData () {
+      const { data } = await this.$api.descController.descFind()
+      if (data) {
+        this.data = data
+      }
+      this.initChart();
+      
+    },
     initChart() {
       this.chart = echarts.init(this.$el, "macarons");
 
@@ -74,15 +62,7 @@ export default {
         legend: {
           orient: "vertical",
           left: 10,
-          data: [
-            "先进技术评估服务",
-            "成果快速转化服务",
-            "供应链创新服务",
-            "项目全价值链创新服务",
-            "行业/领域解决方案服务",
-            "产业链/生态群创新服务",
-            "跨区域协同创新服务"
-          ],
+          data: this.data ? Object.keys(this.data) : [],
         },
         series: [
           {
@@ -145,15 +125,9 @@ export default {
                 },
               },
             },
-            data: [
-              { value: 300, name: "先进技术评估服务" },
-              { value: 200, name: "成果快速转化服务" },
-              { value: 230, name: "供应链创新服务" },
-              { value: 150, name: "项目全价值链创新服务" },
-              { value: 200, name: "行业/领域解决方案服务" },
-              { value: 320, name: "产业链/生态群创新服务" },
-              { value: 180, name: "跨区域协同创新服务" },
-            ],
+            data:this.data ? Object.keys(this.data).map(key => {
+              return { value: this.data[key], name: key }
+            }): []
           },
         ],
       });

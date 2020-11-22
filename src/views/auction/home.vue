@@ -4,29 +4,32 @@
      <div class="left">
       <el-carousel indicator-position="outside">
         <el-carousel-item v-for="item in 4" :key="item">
-
         <img src="../../assets/404_images/img/chengguoshequ_head.png" alt="">
       </el-carousel-item>
-  </el-carousel>
+      </el-carousel>
      </div>
      <div class="right" >
        <ul class="label" style="display:flex; justify-content:flex-start; cursor:pointer;"> 
-         <li>开源需求</li>
-         <li>开源发布</li>
+         <li @mouseover="bannerShowType = 1">开源需求</li>
+         <li @mouseover="bannerShowType = 2">开源发布</li>
        </ul>
-       <div class="right-label ">
+       <div class="right-label " v-if="bannerShowType === 1">
          <div class="right-top">
            <ul>
-             <li><a href="#">来源需求发布来源需求发布来源需求发布来源需求发布</a> <span>2020:18:22</span></li>
-             <li><a href="#">来源需求发布来源需求发布来源需求发布来源需求发布</a> <span>2020:18:22</span></li>
-             <li><a href="#">来源需求发布来源需求发布来源需求发布来源需求发布</a> <span>2020:18:22</span></li>
-             <li><a href="#">来源需求发布来源需求发布来源需求发布来源需求发布</a> <span>2020:18:22</span></li>
-             <li><a href="#">来源需求发布来源需求发布来源需求发布来源需求发布</a> <span>2020:18:22</span></li>
              <li><a href="#">来源需求发布来源需求发布来源需求发布来源需求发布</a> <span>2020:18:22</span></li>
            </ul>
          </div>
          <div class="more"><a href="#">更多>>></a></div>
        </div>
+        <div class="right-label " v-if="bannerShowType === 2">
+         <div class="right-top">
+           <ul>
+             <li><a href="#">asdsdasdasdassad</a> <span>2020:18:22</span></li>
+          </ul>
+         </div>
+         <div class="more"><a href="#">更多>>></a></div>
+       </div>
+
      </div>
     </div>
     <div class="list">
@@ -120,7 +123,8 @@ export default {
     return {
       index: 1,
       url:'@/assets/404_images/img/pipeline1.jpg',
-      
+      bannerShowType: 1,
+
       publishList: [],
       achievementList: [],
       tptList: [],
